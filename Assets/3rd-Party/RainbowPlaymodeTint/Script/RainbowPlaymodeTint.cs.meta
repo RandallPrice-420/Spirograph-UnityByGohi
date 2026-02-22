@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 73b87caaeeeb6784da14c13148115729
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 235569
+  packageName: Rainbow Playmode Tint
+  packageVersion: 1.0
+  assetPath: Assets/RainbowPlaymodeTint/Script/RainbowPlaymodeTint.cs
+  uploadId: 538207

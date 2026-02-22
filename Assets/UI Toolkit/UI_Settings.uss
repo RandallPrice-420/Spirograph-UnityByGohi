@@ -1,0 +1,6 @@
+.header {
+    font-size: 30px;
+    -unity-font-definition: url("project://database/Assets/UI%20Toolkit/UnityThemes/UnityDefaultRuntimeTheme.tss?fileID=2230732570650464555&guid=b7c98bc59b6aa834a8b9c26f62069c3b&type=3#NotInter-Regular");
+    -unity-font-style: bold;
+    width: auto;
+}

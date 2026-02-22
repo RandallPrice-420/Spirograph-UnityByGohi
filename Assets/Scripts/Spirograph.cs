@@ -1,0 +1,355 @@
+using System.Collections.Generic;
+
+using TMPro;
+
+using UnityEngine;
+
+
+public class Spirograph : MonoBehaviour
+{
+    // -------------------------------------------------------------------------
+    // Public Variables:
+    // -----------------
+    //   DrawPoint
+    //   InnerCircle
+    //   OuterCircle
+    //   LineRendererOuterCircle
+    //   LineRendererSpirograph
+    //
+    //   DrawPointRadius
+    //   InnerRadius
+    //   OuterRadius
+    //   OuterCircleRotationSpeed
+    //
+    //   MaxGraphPoints
+    //   DrawInterval
+    //   GraphPointDistanceThreshold
+    // -------------------------------------------------------------------------
+
+    #region .  Public Variables  .
+
+    [Header("Spirograph")]
+    public Transform     DrawPoint;
+	public Transform     InnerCircle;
+	public Transform     OuterCircle;
+	public LineRenderer  LineRendererOuterCircle;
+    public LineRenderer  LineRendererSpirograph;
+
+    [Space, Header("Spirograph Controls")]
+	                     public float    DrawPointRadius             =  5.0f;      //   5.0f
+                         public float    InnerRadius                 =  9.5f;      //   9.5f
+	                     public float    OuterRadius                 = 15.0f;      //  15.0f
+    [Range(10f, 1500f)]  public float    OuterCircleRotationSpeed    = 400.0f;      // 200.0f
+
+    [Space, Header("Spirograph Optimization")]
+	                     public int      MaxGraphPoints              = 5000;        // 5000.0
+	[Range(0.0001f, 1f)] public float    DrawInterval                = .0001f;      // .005f
+	[Range(0.01f,   1f)] public float    GraphPointDistanceThreshold = .01f;        // .01f
+
+    //[Space, Header("Debug Controls")]
+    //                     public TMP_Text DebugText;
+    #endregion
+
+
+
+    // -------------------------------------------------------------------------
+    // Private Variables:
+    // ------------------
+    //   _firstGraphPoint
+    //   _graphPoints
+    //   _innerCircleRotationSpeed
+    //   _lastDrawTime
+    //   _shouldDraw
+    // -------------------------------------------------------------------------
+
+    #region .  Private Variables  .
+
+    private Vector3       _firstGraphPoint;
+    private List<Vector3> _graphPoints;
+    private float         _innerCircleRotationSpeed;
+	private float         _lastDrawTime;
+	private bool          _shouldDraw = false;
+
+    #endregion
+
+
+
+    // -------------------------------------------------------------------------
+    // Public Methods:
+    // ---------------
+    //   ClearLineVisuals()
+    // -------------------------------------------------------------------------
+
+    #region .  ClearLineVisuals()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  ClearLineVisuals()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    public void ClearLineVisuals()
+	{
+		_shouldDraw = true;
+		LineRendererOuterCircle.positionCount = 0;
+
+		OuterCircle.gameObject.SetActive(false);
+
+    }   //  ClearLineVisuals()
+    #endregion
+
+
+
+    // -------------------------------------------------------------------------
+    // Private Methods:
+    // ----------------
+    //   AddPointToGraph()
+    //   Awake()
+    //   ClearGraph()
+    //   DrawSpiroGraph()
+    //   InitializePoints()
+    //   LateUpdate()
+    //   OnDrawGizmos()
+    //   OnValidate()
+    //   RotatePoints()
+    //   Update()
+    //   UpdateLine()
+    // -------------------------------------------------------------------------
+
+    #region .  AddPointToGraph()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  AddPointToGraph()
+    //  Description..:  
+    //  Parameters...:  Vector3
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void AddPointToGraph(Vector3 pointToDraw)
+	{
+        float distance = (_graphPoints.Count > 0) ? Vector3.Distance(pointToDraw, _graphPoints[0]) : 0f;
+
+        //DebugText.text = $"AddPointToGraph:  _graphPoints.Count = {_graphPoints.Count}, _firstGraphPoint = {_firstGraphPoint}, pointToDraw = {pointToDraw}, distance = {distance}";
+        
+        if (Time.time - _lastDrawTime >= DrawInterval)
+		{
+			_lastDrawTime = Time.time;
+
+            if (distance < GraphPointDistanceThreshold)
+            {
+                Debug.Log($"Curve closed");
+            }
+
+
+            //         if (!_graphPoints.Contains(pointToDraw))
+            //{
+            //            if ((_graphPoints.Count > 0) && (Vector3.Distance(pointToDraw, _graphPoints[^1]) > GraphPointDistanceThreshold))
+            //{
+            //	_graphPoints.Add(pointToDraw);
+            //}
+            //else
+            //{
+
+                _graphPoints.Add(pointToDraw);
+
+                if (_graphPoints.Count == 1)
+                {
+                    _firstGraphPoint = pointToDraw;
+                }
+                else if (_graphPoints.Count > MaxGraphPoints)
+                {
+                    ClearLineVisuals();
+                }
+			//}
+
+			DrawSpiroGraph();
+		}
+
+    }   //  AddPointToGraph()
+    #endregion
+
+
+    #region .  Awake()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  Awake()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void Awake()
+	{
+        _graphPoints = new List<Vector3>();
+
+		InitializePoints();
+
+    }	// Awake()
+    #endregion
+
+
+    #region .  ClearGraph()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  ClearGraph()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void ClearGraph()
+	{
+		_graphPoints?.Clear();
+
+		LineRendererSpirograph.positionCount = 0;
+
+    }   //  ClearGraph()
+    #endregion
+
+
+    #region .  DrawSpiroGraph()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  DrawSpiroGraph()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void DrawSpiroGraph()
+	{
+		LineRendererSpirograph.positionCount = _graphPoints.Count;
+
+		for (int i = 0; i < _graphPoints.Count; i++)
+        {
+			LineRendererSpirograph.SetPosition(i, _graphPoints[i]);
+		}
+
+    }   //  DrawSpiroGraph()
+    #endregion
+
+
+    #region .  InitializePoints()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  InitializePoints()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void InitializePoints()
+	{
+		_innerCircleRotationSpeed = OuterCircleRotationSpeed * OuterRadius / InnerRadius;
+		InnerCircle.localPosition = new Vector3(OuterRadius - InnerRadius, 0f, 0f);
+		DrawPoint  .localPosition = new Vector3(DrawPointRadius, 0f, 0f);
+        _firstGraphPoint          = DrawPoint.localPosition;
+
+        UpdateLine();
+
+    }   //  InitializePoints()
+    #endregion
+
+
+    #region .  LateUpdate()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  LateUpdate()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void LateUpdate()
+	{
+		if (_shouldDraw) return;
+
+		UpdateLine();
+
+    }   // LateUpdate()
+    #endregion
+
+
+    #region .  OnDrawGizmos()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  OnDrawGizmos()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.white;
+		Gizmos.DrawWireSphere(transform.position, OuterRadius);
+
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawWireSphere(InnerCircle.position, InnerRadius);
+
+		float drawSphereRadius = 0.1f;
+
+		Gizmos.color = Color.magenta;
+		Gizmos.DrawSphere(DrawPoint.position, drawSphereRadius);
+
+    }   // OnDrawGizmos()
+    #endregion
+
+
+    #region .  OnValidate()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  OnValidate()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void OnValidate()
+	{
+		_shouldDraw = false;
+		OuterCircle.gameObject.SetActive(true);
+
+		InitializePoints();
+		ClearGraph();
+
+    }   // OnValidate()
+    #endregion
+
+
+    #region .  RotatePoints()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  RotatePoints()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void RotatePoints()
+	{
+		OuterCircle.Rotate(transform.forward,   OuterCircleRotationSpeed * Time.deltaTime);
+		InnerCircle.Rotate(-transform.forward, _innerCircleRotationSpeed * Time.deltaTime);
+
+    }   //  RotatePoints()
+    #endregion
+
+
+    #region .  Update()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  Update()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void Update()
+	{
+		if (_shouldDraw) return;
+
+		RotatePoints();
+		AddPointToGraph(DrawPoint.position);
+
+    }   // Update()
+    #endregion
+
+
+    #region .  UpdateLine()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  UpdateLine()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void UpdateLine()
+    {
+		LineRendererOuterCircle.positionCount = 3;
+		LineRendererOuterCircle.SetPosition(0, transform  .position);
+		LineRendererOuterCircle.SetPosition(1, InnerCircle.position);
+		LineRendererOuterCircle.SetPosition(2, DrawPoint  .position);
+
+    }   //  UpdateLine()
+    #endregion
+
+
+}   // class SpiroGraph

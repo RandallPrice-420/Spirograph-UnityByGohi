@@ -1,0 +1,6 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/UI_Settings.uss?fileID=7433441132597879392&amp;guid=3efa3804f9557ee4ba839c15095d8d66&amp;type=3#UI_Settings" />
+    <engine:VisualElement name="Container_Section" style="flex-grow: 1;">
+        <engine:Label text="Label" name="Header" class="header" />
+    </engine:VisualElement>
+</engine:UXML>
