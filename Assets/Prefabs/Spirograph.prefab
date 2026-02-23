@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1536913960512026459}
   - component: {fileID: 1536913960512026461}
   - component: {fileID: 1536913960512026458}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Spirograph
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1536913960659544741}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: InnerCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -204,7 +204,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1536913960781853955}
   - component: {fileID: 1536913960781853954}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: OuterCircle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -343,7 +343,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1536913961283456544}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: DrawPoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

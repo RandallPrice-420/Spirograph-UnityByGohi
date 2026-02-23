@@ -1,9 +1,17 @@
 using System.Collections.Generic;
-
-using TMPro;
-
 using UnityEngine;
 
+
+// -----------------------------------------------------------------------------
+//  Class........:  Spirograph
+//
+//  Description..:  Attach this to the parent GameObject of the Spirograph.
+//                  The parent GameObject should have two child GameObjects
+//                  that represent the inner and outer circles, and a third
+//                  child GameObject that represents the draw point.  The
+//                  LineRenderer components for the outer circle and the
+//                  spirograph should be assigned in the inspector.
+// -----------------------------------------------------------------------------
 
 public class Spirograph : MonoBehaviour
 {
@@ -124,7 +132,11 @@ public class Spirograph : MonoBehaviour
     // -------------------------------------------------------------------------
     private void AddPointToGraph(Vector3 pointToDraw)
 	{
-        float distance = (_graphPoints.Count > 0) ? Vector3.Distance(pointToDraw, _graphPoints[0]) : 0f;
+        _graphPoints.Add(pointToDraw);
+
+        float distance = (_graphPoints.Count == 1)
+                       ? 0f
+                       : Vector3.Distance(pointToDraw, _graphPoints[0]);
 
         //DebugText.text = $"AddPointToGraph:  _graphPoints.Count = {_graphPoints.Count}, _firstGraphPoint = {_firstGraphPoint}, pointToDraw = {pointToDraw}, distance = {distance}";
         
@@ -132,34 +144,18 @@ public class Spirograph : MonoBehaviour
 		{
 			_lastDrawTime = Time.time;
 
-            if (distance < GraphPointDistanceThreshold)
+            if ( (distance > 0) && ( distance < GraphPointDistanceThreshold) )
             {
-                Debug.Log($"Curve closed");
+                Debug.Log($"Curve closed, distance = {distance}, GraphPointDistanceThreshold = {GraphPointDistanceThreshold}");
             }
 
+            if (_graphPoints.Count > MaxGraphPoints)
+            {
+                Debug.Log($"Maximum points reached = {MaxGraphPoints}");
+                ClearLineVisuals();
+            }
 
-            //         if (!_graphPoints.Contains(pointToDraw))
-            //{
-            //            if ((_graphPoints.Count > 0) && (Vector3.Distance(pointToDraw, _graphPoints[^1]) > GraphPointDistanceThreshold))
-            //{
-            //	_graphPoints.Add(pointToDraw);
-            //}
-            //else
-            //{
-
-                _graphPoints.Add(pointToDraw);
-
-                if (_graphPoints.Count == 1)
-                {
-                    _firstGraphPoint = pointToDraw;
-                }
-                else if (_graphPoints.Count > MaxGraphPoints)
-                {
-                    ClearLineVisuals();
-                }
-			//}
-
-			DrawSpiroGraph();
+            DrawSpiroGraph();
 		}
 
     }   //  AddPointToGraph()
@@ -203,8 +199,11 @@ public class Spirograph : MonoBehaviour
     #region .  DrawSpiroGraph()  .
     // -------------------------------------------------------------------------
     //  Method.......:  DrawSpiroGraph()
-    //  Description..:  
-    //  Parameters...:  None
+    //  Description..:  This method draws the spirograph.  Set the position count
+    //                  of the LineRenderer to the number of points in the graph.
+    //                  Loop through the list of points and set the position of a
+    //                  vertex in the line.
+    //  Parameters...:  None 
     //  Returns......:  Nothing
     // -------------------------------------------------------------------------
     private void DrawSpiroGraph()
@@ -215,6 +214,8 @@ public class Spirograph : MonoBehaviour
         {
 			LineRendererSpirograph.SetPosition(i, _graphPoints[i]);
 		}
+
+        //TODO:  add a text label showing the current count.
 
     }   //  DrawSpiroGraph()
     #endregion
