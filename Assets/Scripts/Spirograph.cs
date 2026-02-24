@@ -36,6 +36,7 @@ public class Spirograph : MonoBehaviour
 
     #region .  Public Variables  .
 
+
     [Header("Spirograph")]
     public Transform     DrawPoint;
 	public Transform     InnerCircle;
@@ -45,17 +46,15 @@ public class Spirograph : MonoBehaviour
 
     [Space, Header("Spirograph Controls")]
 	                     public float    DrawPointRadius             =  5.0f;      //   5.0f
-                         public float    InnerRadius                 =  9.5f;      //   9.5f
-	                     public float    OuterRadius                 = 15.0f;      //  15.0f
-    [Range(10f, 1500f)]  public float    OuterCircleRotationSpeed    = 400.0f;      // 200.0f
+                         public float    InnerCircleRadius           =  9.5f;      //   9.5f
+	                     public float    OuterCircleRadius           = 15.0f;      //  15.0f
+    [Range(10f, 1500f)]  public float    OuterCircleRotationSpeed    = 400.0f;     // 200.0f
 
     [Space, Header("Spirograph Optimization")]
 	                     public int      MaxGraphPoints              = 5000;        // 5000.0
 	[Range(0.0001f, 1f)] public float    DrawInterval                = .0001f;      // .005f
 	[Range(0.01f,   1f)] public float    GraphPointDistanceThreshold = .01f;        // .01f
 
-    //[Space, Header("Debug Controls")]
-    //                     public TMP_Text DebugText;
     #endregion
 
 
@@ -173,7 +172,7 @@ public class Spirograph : MonoBehaviour
 	{
         _graphPoints = new List<Vector3>();
 
-		InitializePoints();
+		//InitializePoints();
 
     }	// Awake()
     #endregion
@@ -230,12 +229,15 @@ public class Spirograph : MonoBehaviour
     // -------------------------------------------------------------------------
     private void InitializePoints()
 	{
-		_innerCircleRotationSpeed = OuterCircleRotationSpeed * OuterRadius / InnerRadius;
-		InnerCircle.localPosition = new Vector3(OuterRadius - InnerRadius, 0f, 0f);
+		_innerCircleRotationSpeed = OuterCircleRotationSpeed * OuterCircleRadius / InnerCircleRadius;
+		InnerCircle.localPosition = new Vector3(OuterCircleRadius - InnerCircleRadius, 0f, 0f);
 		DrawPoint  .localPosition = new Vector3(DrawPointRadius, 0f, 0f);
         _firstGraphPoint          = DrawPoint.localPosition;
 
-        UpdateLine();
+        if (UIManager.Instance.IsStarted)
+        {
+            UpdateLine();
+        }
 
     }   //  InitializePoints()
     #endregion
@@ -252,7 +254,10 @@ public class Spirograph : MonoBehaviour
 	{
 		if (_shouldDraw) return;
 
-		UpdateLine();
+        if (UIManager.Instance.IsStarted)
+        {
+            UpdateLine();
+        }
 
     }   // LateUpdate()
     #endregion
@@ -268,10 +273,10 @@ public class Spirograph : MonoBehaviour
     private void OnDrawGizmos()
 	{
 		Gizmos.color = Color.white;
-		Gizmos.DrawWireSphere(transform.position, OuterRadius);
+		Gizmos.DrawWireSphere(transform.position, OuterCircleRadius);
 
 		Gizmos.color = Color.yellow;
-		Gizmos.DrawWireSphere(InnerCircle.position, InnerRadius);
+		Gizmos.DrawWireSphere(InnerCircle.position, InnerCircleRadius);
 
 		float drawSphereRadius = 0.1f;
 
@@ -294,8 +299,11 @@ public class Spirograph : MonoBehaviour
 		_shouldDraw = false;
 		OuterCircle.gameObject.SetActive(true);
 
-		InitializePoints();
-		ClearGraph();
+        if (UIManager.Instance.IsStarted)
+        {
+            InitializePoints();
+            ClearGraph();
+        }
 
     }   // OnValidate()
     #endregion
@@ -328,8 +336,11 @@ public class Spirograph : MonoBehaviour
 	{
 		if (_shouldDraw) return;
 
-		RotatePoints();
-		AddPointToGraph(DrawPoint.position);
+        if (UIManager.Instance.IsStarted)
+        {
+            RotatePoints();
+            AddPointToGraph(DrawPoint.position);
+        }
 
     }   // Update()
     #endregion

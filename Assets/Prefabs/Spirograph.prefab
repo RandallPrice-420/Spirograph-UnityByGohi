@@ -156,8 +156,8 @@ MonoBehaviour:
   LineRendererOuterCircle: {fileID: 1536913960781853954}
   LineRendererSpirograph: {fileID: 1536913960512026461}
   DrawPointRadius: 6.3
-  InnerRadius: 9.5
-  OuterRadius: 11.9
+  InnerCircleRadius: 9.5
+  OuterCircleRadius: 15
   OuterCircleRotationSpeed: 1500
   MaxGraphPoints: 4000
   DrawInterval: 0.001
@@ -187,7 +187,7 @@ Transform:
   m_GameObject: {fileID: 1536913960659544738}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.3999996, y: 0, z: 0}
+  m_LocalPosition: {x: 5.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -273,8 +273,8 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 2.3999996, y: 0, z: 0}
-  - {x: 8.7, y: 0, z: 0}
+  - {x: 5.5, y: 0, z: 0}
+  - {x: 11.8, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
