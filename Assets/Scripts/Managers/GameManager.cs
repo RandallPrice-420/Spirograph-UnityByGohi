@@ -1,7 +1,7 @@
 using UnityEngine;
 
 
-public class Main : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     // -------------------------------------------------------------------------
     // Public Variables:
@@ -32,11 +32,14 @@ public class Main : MonoBehaviour
     // -------------------------------------------------------------------------
     private void Start()
     {
-        Instantiate(SpirographPrefab);
-        //Instantiate(SpirographPrefab, Vector3.zero, Quaternion.identity);
+        GameObject spirograph        = Instantiate(SpirographPrefab);
+        float      outerCircleRadius = Spirograph.Instance.OuterCircleRadius;
+        float      coordinateX       = (Screen.width / 2f) - outerCircleRadius - 10f;
+
+        spirograph.transform.SetPositionAndRotation(new Vector3(coordinateX, 0f, 0f), Quaternion.identity);
 
     }	// Start()
     #endregion
 
 
-}	// class Main
+}	// class GameManager

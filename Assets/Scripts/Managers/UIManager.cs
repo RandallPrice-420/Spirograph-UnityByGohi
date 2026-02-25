@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,20 +24,26 @@ public class UIManager : Singleton<UIManager>
 
     #region .  Public Variables  .
 
-    public Button Button_Pause;
-    public Button Button_Random;
-    public Button Button_Resume;
-    public Button Button_Reset;
-    public Button Button_Start;
-    public Button Button_Stop;
-
     public bool   IsStarted = false;
 
-    public Slider Slider_OuterCircle;
-    public Slider Slider_InnerCircle;
-    public Slider Slider_DrawPoint;
-    public Slider Slider_OuterCircleRotationSpeed;
-    public Slider Slider_GraphPointDistance;
+    [Space, Header("Button Controls")]
+    public Button   Button_Pause;
+    public Button   Button_Random;
+    public Button   Button_Resume;
+    public Button   Button_Reset;
+    public Button   Button_Start;
+    public Button   Button_Stop;
+
+    [Space, Header("Slider Controls")]
+    public Slider   Slider_OuterCircle;
+    public Slider   Slider_InnerCircle;
+    public Slider   Slider_DrawPoint;
+    public Slider   Slider_OuterCircleRotationSpeed;
+    public Slider   Slider_GraphPointDistance;
+
+    [Space, Header("Information")]
+    public TMP_Text TMP_MaxGraphPointsValue;
+    public TMP_Text TMP_PointCountValue;
 
     #endregion
 
