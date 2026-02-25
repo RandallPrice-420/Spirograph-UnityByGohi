@@ -13,7 +13,7 @@ using UnityEngine;
 //                  spirograph should be assigned in the inspector.
 // -----------------------------------------------------------------------------
 
-public class Spirograph : MonoBehaviour
+public class Spirograph : Singleton<Spirograph>
 {
     // -------------------------------------------------------------------------
     // Public Variables:
@@ -45,10 +45,10 @@ public class Spirograph : MonoBehaviour
     public LineRenderer  LineRendererSpirograph;
 
     [Space, Header("Spirograph Controls")]
-	                     public float    DrawPointRadius             =  5.0f;      //   5.0f
-                         public float    InnerCircleRadius           =  9.5f;      //   9.5f
-	                     public float    OuterCircleRadius           = 15.0f;      //  15.0f
-    [Range(10f, 1500f)]  public float    OuterCircleRotationSpeed    = 400.0f;     // 200.0f
+	                     public float    DrawPointRadius             =   5.0f;      //   5.0f
+                         public float    InnerCircleRadius           =   9.5f;      //   9.5f
+	                     public float    OuterCircleRadius           =  15.0f;      //  15.0f
+    [Range(10f, 1500f)]  public float    OuterCircleRotationSpeed    = 400.0f;      // 200.0f
 
     [Space, Header("Spirograph Optimization")]
 	                     public int      MaxGraphPoints              = 5000;        // 5000.0
@@ -133,15 +133,15 @@ public class Spirograph : MonoBehaviour
 	{
         _graphPoints.Add(pointToDraw);
 
-        float distance = (_graphPoints.Count == 1)
-                       ? 0f
-                       : Vector3.Distance(pointToDraw, _graphPoints[0]);
-
         //DebugText.text = $"AddPointToGraph:  _graphPoints.Count = {_graphPoints.Count}, _firstGraphPoint = {_firstGraphPoint}, pointToDraw = {pointToDraw}, distance = {distance}";
         
         if (Time.time - _lastDrawTime >= DrawInterval)
 		{
 			_lastDrawTime = Time.time;
+
+            float distance = (_graphPoints.Count == 1)
+                           ? 0f
+                           : Vector3.Distance(pointToDraw, _graphPoints[0]);
 
             if ( (distance > 0) && ( distance < GraphPointDistanceThreshold) )
             {
@@ -172,7 +172,7 @@ public class Spirograph : MonoBehaviour
 	{
         _graphPoints = new List<Vector3>();
 
-		//InitializePoints();
+		InitializePoints();
 
     }	// Awake()
     #endregion
@@ -234,10 +234,10 @@ public class Spirograph : MonoBehaviour
 		DrawPoint  .localPosition = new Vector3(DrawPointRadius, 0f, 0f);
         _firstGraphPoint          = DrawPoint.localPosition;
 
-        if (UIManager.Instance.IsStarted)
-        {
-            UpdateLine();
-        }
+        //if (UIManager.Instance.IsStarted)
+        //{
+        UpdateLine();
+        //}
 
     }   //  InitializePoints()
     #endregion
