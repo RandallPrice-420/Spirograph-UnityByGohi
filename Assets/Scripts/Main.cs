@@ -32,7 +32,8 @@ public class Main : MonoBehaviour
     // -------------------------------------------------------------------------
     private void Start()
     {
-        Instantiate(SpirographPrefab, Vector3.zero, Quaternion.identity);
+        Instantiate(SpirographPrefab);
+        //Instantiate(SpirographPrefab, Vector3.zero, Quaternion.identity);
 
     }	// Start()
     #endregion

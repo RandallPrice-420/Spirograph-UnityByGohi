@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5889630487089507306}
   - component: {fileID: 863050911467933364}
   - component: {fileID: 670627109380045237}
-  - component: {fileID: 6744499505954429368}
+  - component: {fileID: 195209215753977766}
   m_Layer: 5
   m_Name: Slider
   m_TagString: Value
@@ -94,14 +94,26 @@ MonoBehaviour:
   m_FillRect: {fileID: 0}
   m_HandleRect: {fileID: 3737803304984603388}
   m_Direction: 0
-  m_MinValue: 0.1
-  m_MaxValue: 20
+  m_MinValue: 1
+  m_MaxValue: 1500
   m_WholeNumbers: 0
-  m_Value: 11.77
+  m_Value: 1000
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls: []
---- !u!114 &6744499505954429368
+      m_Calls:
+      - m_Target: {fileID: 195209215753977766}
+        m_TargetAssemblyTypeName: SliderHandler, Assembly-CSharp
+        m_MethodName: SliderChanged
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &195209215753977766
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,11 +122,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 861944819133924372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f81c803232e069c4e93744d8613e9010, type: 3}
+  m_Script: {fileID: 11500000, guid: 2101493899d9f7b4d9b78f35fd8503b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ThisSlider: {fileID: 670627109380045237}
-  FormatString: '##0.00'
+  FormatString: '#0.00'
 --- !u!1 &1281323847377640937
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,7 +302,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Outer Circle Radius
+  m_text: Label
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -515,4 +526,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 
+  m_Text: '#'

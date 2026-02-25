@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 // -----------------------------------------------------------------------------
@@ -21,40 +22,34 @@ public class Spirograph : Singleton<Spirograph>
     //   DrawPoint
     //   InnerCircle
     //   OuterCircle
-    //   LineRendererOuterCircle
-    //   LineRendererSpirograph
     //
+    //   OuterCircleRadius
+    //   InnerCircleRadius
     //   DrawPointRadius
-    //   InnerRadius
-    //   OuterRadius
     //   OuterCircleRotationSpeed
     //
-    //   MaxGraphPoints
     //   DrawInterval
     //   GraphPointDistanceThreshold
+    //   MaxGraphPoints
     // -------------------------------------------------------------------------
 
     #region .  Public Variables  .
 
-
     [Header("Spirograph")]
-    public Transform     DrawPoint;
-	public Transform     InnerCircle;
-	public Transform     OuterCircle;
-	public LineRenderer  LineRendererOuterCircle;
-    public LineRenderer  LineRendererSpirograph;
+	public Transform OuterCircle;
+	public Transform InnerCircle;
+    public Transform DrawPoint;
 
     [Space, Header("Spirograph Controls")]
-	                     public float    DrawPointRadius             =   5.0f;      //   5.0f
-                         public float    InnerCircleRadius           =   9.5f;      //   9.5f
-	                     public float    OuterCircleRadius           =  15.0f;      //  15.0f
-    [Range(10f, 1500f)]  public float    OuterCircleRotationSpeed    = 400.0f;      // 200.0f
+	public float     OuterCircleRadius        =  15.0f;
+    public float     InnerCircleRadius        =   9.5f;
+	public float     DrawPointRadius          =   5.0f;
+    public float     OuterCircleRotationSpeed = 400.0f;
 
     [Space, Header("Spirograph Optimization")]
-	                     public int      MaxGraphPoints              = 5000;        // 5000.0
-	[Range(0.0001f, 1f)] public float    DrawInterval                = .0001f;      // .005f
-	[Range(0.01f,   1f)] public float    GraphPointDistanceThreshold = .01f;        // .01f
-
+	[Range(0.0001f, 1.0f)] public float DrawInterval                = .0001f;      // .005f
+    [Range(100, 50000)]    public int   MaxGraphPoints              = 5000;        // 5000.0
+	                       public float GraphPointDistanceThreshold = .001f;       // .01f
     #endregion
 
 
@@ -67,6 +62,15 @@ public class Spirograph : Singleton<Spirograph>
     //   _innerCircleRotationSpeed
     //   _lastDrawTime
     //   _shouldDraw
+    //   _isCurveClosed
+    //   _isFirstTime
+    //   _sliderOuterCircle
+    //   _sliderInnerCircle
+    //   _sliderDrawPoint
+    //   _sliderOuterCircleRotationSpeed
+    //   _sliderGraphPointDistance
+    //   _lineRendererOuterCircle
+    //   _lineRendererSpirograph
     // -------------------------------------------------------------------------
 
     #region .  Private Variables  .
@@ -75,7 +79,18 @@ public class Spirograph : Singleton<Spirograph>
     private List<Vector3> _graphPoints;
     private float         _innerCircleRotationSpeed;
 	private float         _lastDrawTime;
-	private bool          _shouldDraw = false;
+	private bool          _shouldDraw    = false;
+	private bool          _isCurveClosed = false;
+	private bool          _isFirstTime   = true;
+
+    private Slider        _sliderOuterCircle;
+    private Slider        _sliderInnerCircle;
+    private Slider        _sliderDrawPoint;
+    private Slider        _sliderOuterCircleRotationSpeed;
+    private Slider        _sliderGraphPointDistance;
+
+    private LineRenderer  _lineRendererOuterCircle;
+    private LineRenderer  _lineRendererSpirograph;
 
     #endregion
 
@@ -97,7 +112,7 @@ public class Spirograph : Singleton<Spirograph>
     public void ClearLineVisuals()
 	{
 		_shouldDraw = true;
-		LineRendererOuterCircle.positionCount = 0;
+		_lineRendererOuterCircle.positionCount = 0;
 
 		OuterCircle.gameObject.SetActive(false);
 
@@ -143,8 +158,9 @@ public class Spirograph : Singleton<Spirograph>
                            ? 0f
                            : Vector3.Distance(pointToDraw, _graphPoints[0]);
 
-            if ( (distance > 0) && ( distance < GraphPointDistanceThreshold) )
+            if ( (distance > 0) && (distance < GraphPointDistanceThreshold) )
             {
+                _isCurveClosed = true;
                 Debug.Log($"Curve closed, distance = {distance}, GraphPointDistanceThreshold = {GraphPointDistanceThreshold}");
             }
 
@@ -170,9 +186,16 @@ public class Spirograph : Singleton<Spirograph>
     // -------------------------------------------------------------------------
     private void Awake()
 	{
-        _graphPoints = new List<Vector3>();
+        _sliderOuterCircle              = UIManager.Instance.Slider_OuterCircle;
+        _sliderInnerCircle              = UIManager.Instance.Slider_InnerCircle;
+        _sliderDrawPoint                = UIManager.Instance.Slider_DrawPoint;
+        _sliderOuterCircleRotationSpeed = UIManager.Instance.Slider_OuterCircleRotationSpeed;
+        _sliderGraphPointDistance       = UIManager.Instance.Slider_GraphPointDistance;
 
-		InitializePoints();
+        _lineRendererOuterCircle        = OuterCircle.GetComponent<LineRenderer>();
+        _lineRendererSpirograph         = gameObject.GetComponent<LineRenderer>();
+
+        //InitializePoints();
 
     }	// Awake()
     #endregion
@@ -189,7 +212,7 @@ public class Spirograph : Singleton<Spirograph>
 	{
 		_graphPoints?.Clear();
 
-		LineRendererSpirograph.positionCount = 0;
+		_lineRendererSpirograph.positionCount = 0;
 
     }   //  ClearGraph()
     #endregion
@@ -207,11 +230,11 @@ public class Spirograph : Singleton<Spirograph>
     // -------------------------------------------------------------------------
     private void DrawSpiroGraph()
 	{
-		LineRendererSpirograph.positionCount = _graphPoints.Count;
+        _lineRendererSpirograph.positionCount = _graphPoints.Count;
 
 		for (int i = 0; i < _graphPoints.Count; i++)
         {
-			LineRendererSpirograph.SetPosition(i, _graphPoints[i]);
+            _lineRendererSpirograph.SetPosition(i, _graphPoints[i]);
 		}
 
         //TODO:  add a text label showing the current count.
@@ -229,10 +252,13 @@ public class Spirograph : Singleton<Spirograph>
     // -------------------------------------------------------------------------
     private void InitializePoints()
 	{
+        _graphPoints = new List<Vector3>();
+
+		InnerCircle.transform.localPosition = new Vector3(OuterCircleRadius - InnerCircleRadius, 0f, 0f);
+		DrawPoint  .transform.localPosition = new Vector3(DrawPointRadius, 0f, 0f);
+
 		_innerCircleRotationSpeed = OuterCircleRotationSpeed * OuterCircleRadius / InnerCircleRadius;
-		InnerCircle.localPosition = new Vector3(OuterCircleRadius - InnerCircleRadius, 0f, 0f);
-		DrawPoint  .localPosition = new Vector3(DrawPointRadius, 0f, 0f);
-        _firstGraphPoint          = DrawPoint.localPosition;
+        _firstGraphPoint          = DrawPoint.transform.localPosition;
 
         //if (UIManager.Instance.IsStarted)
         //{
@@ -244,22 +270,22 @@ public class Spirograph : Singleton<Spirograph>
 
 
     #region .  LateUpdate()  .
-    // -------------------------------------------------------------------------
-    //  Method.......:  LateUpdate()
-    //  Description..:  
-    //  Parameters...:  None
-    //  Returns......:  Nothing
-    // -------------------------------------------------------------------------
-    private void LateUpdate()
-	{
-		if (_shouldDraw) return;
+    //// -------------------------------------------------------------------------
+    ////  Method.......:  LateUpdate()
+    ////  Description..:  
+    ////  Parameters...:  None
+    ////  Returns......:  Nothing
+    //// -------------------------------------------------------------------------
+    //private void LateUpdate()
+    //{
+    //	if (_shouldDraw) return;
 
-        if (UIManager.Instance.IsStarted)
-        {
-            UpdateLine();
-        }
+    //       if (UIManager.Instance.IsStarted)
+    //       {
+    //           UpdateLine();
+    //       }
 
-    }   // LateUpdate()
+    //   }   // LateUpdate()
     #endregion
 
 
@@ -272,18 +298,56 @@ public class Spirograph : Singleton<Spirograph>
     // -------------------------------------------------------------------------
     private void OnDrawGizmos()
 	{
+		float drawSphereRadius = 0.1f;
+
 		Gizmos.color = Color.white;
-		Gizmos.DrawWireSphere(transform.position, OuterCircleRadius);
+		Gizmos.DrawWireSphere(OuterCircle.position, OuterCircleRadius);
 
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(InnerCircle.position, InnerCircleRadius);
-
-		float drawSphereRadius = 0.1f;
 
 		Gizmos.color = Color.magenta;
 		Gizmos.DrawSphere(DrawPoint.position, drawSphereRadius);
 
     }   // OnDrawGizmos()
+    #endregion
+
+
+    #region .  OnDisable()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  OnDisable()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void OnDisable()
+    {
+        _sliderOuterCircle             .onValueChanged.RemoveListener((value) => { OuterCircleRadius           = value; });
+        _sliderInnerCircle             .onValueChanged.RemoveListener((value) => { InnerCircleRadius           = value; });
+        _sliderDrawPoint               .onValueChanged.RemoveListener((value) => { DrawPointRadius             = value; });
+        _sliderOuterCircleRotationSpeed.onValueChanged.RemoveListener((value) => { OuterCircleRotationSpeed    = value; });
+        _sliderGraphPointDistance      .onValueChanged.RemoveListener((value) => { GraphPointDistanceThreshold = value; });
+
+    }   // OnDisable()
+    #endregion
+
+
+    #region .  OnEnable()  .
+    // -------------------------------------------------------------------------
+    //  Method.......:  OnEnable()
+    //  Description..:  
+    //  Parameters...:  None
+    //  Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void OnEnable()
+    {
+        _sliderOuterCircle             .onValueChanged.AddListener((value) => { OuterCircleRadius           = value; });
+        _sliderInnerCircle             .onValueChanged.AddListener((value) => { InnerCircleRadius           = value; });
+        _sliderDrawPoint               .onValueChanged.AddListener((value) => { DrawPointRadius             = value; });
+        _sliderOuterCircleRotationSpeed.onValueChanged.AddListener((value) => { OuterCircleRotationSpeed    = value; });
+        _sliderGraphPointDistance      .onValueChanged.AddListener((value) => { GraphPointDistanceThreshold = value; });
+
+    }   // OnEnable()
     #endregion
 
 
@@ -299,11 +363,11 @@ public class Spirograph : Singleton<Spirograph>
 		_shouldDraw = false;
 		OuterCircle.gameObject.SetActive(true);
 
-        if (UIManager.Instance.IsStarted)
-        {
-            InitializePoints();
-            ClearGraph();
-        }
+        //if (UIManager.Instance.IsStarted)
+        //{
+        //    InitializePoints();
+        //    ClearGraph();
+        //}
 
     }   // OnValidate()
     #endregion
@@ -318,8 +382,8 @@ public class Spirograph : Singleton<Spirograph>
     // -------------------------------------------------------------------------
     private void RotatePoints()
 	{
-		OuterCircle.Rotate(transform.forward,   OuterCircleRotationSpeed * Time.deltaTime);
-		InnerCircle.Rotate(-transform.forward, _innerCircleRotationSpeed * Time.deltaTime);
+		OuterCircle.transform.Rotate( transform.forward,  OuterCircleRotationSpeed * Time.deltaTime);
+		InnerCircle.transform.Rotate(-transform.forward, _innerCircleRotationSpeed * Time.deltaTime);
 
     }   //  RotatePoints()
     #endregion
@@ -334,12 +398,19 @@ public class Spirograph : Singleton<Spirograph>
     // -------------------------------------------------------------------------
     private void Update()
 	{
-		if (_shouldDraw) return;
+		if (_isCurveClosed) return;
+		//if (_shouldDraw) return;
 
         if (UIManager.Instance.IsStarted)
         {
+            if (_isFirstTime)
+            {
+                _isFirstTime = false;
+                InitializePoints();
+            }
+
             RotatePoints();
-            AddPointToGraph(DrawPoint.position);
+            AddPointToGraph(DrawPoint.transform.position);
         }
 
     }   // Update()
@@ -355,10 +426,10 @@ public class Spirograph : Singleton<Spirograph>
     // -------------------------------------------------------------------------
     private void UpdateLine()
     {
-		LineRendererOuterCircle.positionCount = 3;
-		LineRendererOuterCircle.SetPosition(0, transform  .position);
-		LineRendererOuterCircle.SetPosition(1, InnerCircle.position);
-		LineRendererOuterCircle.SetPosition(2, DrawPoint  .position);
+		_lineRendererOuterCircle.positionCount = 3;
+		_lineRendererOuterCircle.SetPosition(0, transform  .transform.position);
+		_lineRendererOuterCircle.SetPosition(1, InnerCircle.transform.position);
+		_lineRendererOuterCircle.SetPosition(2, DrawPoint  .transform.position);
 
     }   //  UpdateLine()
     #endregion

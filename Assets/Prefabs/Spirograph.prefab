@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1536913960512026459}
   - component: {fileID: 1536913960512026461}
   - component: {fileID: 1536913960512026458}
+  - component: {fileID: -1548657069597847066}
   m_Layer: 7
   m_Name: Spirograph
   m_TagString: Untagged
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 1536913960512026456}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -150,18 +151,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac8b8e34c511e4d4cbf30c370c5554c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DrawPoint: {fileID: 1536913961283456544}
-  InnerCircle: {fileID: 1536913960659544741}
   OuterCircle: {fileID: 1536913960781853955}
-  LineRendererOuterCircle: {fileID: 1536913960781853954}
-  LineRendererSpirograph: {fileID: 1536913960512026461}
-  DrawPointRadius: 11
-  InnerCircleRadius: 9.5
-  OuterCircleRadius: 8.3
+  InnerCircle: {fileID: 1536913960659544741}
+  DrawPoint: {fileID: 1536913961283456544}
+  OuterCircleRadius: 8
+  InnerCircleRadius: 6
+  DrawPointRadius: 4
   OuterCircleRotationSpeed: 1500
-  MaxGraphPoints: 4000
   DrawInterval: 0.001
-  GraphPointDistanceThreshold: 1
+  MaxGraphPoints: 4000
+  GraphPointDistanceThreshold: 0.06
+--- !u!114 &-1548657069597847066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1536913960512026456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2101493899d9f7b4d9b78f35fd8503b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  FormatString: 
 --- !u!1 &1536913960659544738
 GameObject:
   m_ObjectHideFlags: 0
@@ -187,7 +199,7 @@ Transform:
   m_GameObject: {fileID: 1536913960659544738}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.5, y: 0, z: 0}
+  m_LocalPosition: {x: 2.3, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -273,8 +285,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 5.5, y: 0, z: 0}
-  - {x: 7.96, y: 0, z: 0}
+  - {x: -10, y: 0, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1

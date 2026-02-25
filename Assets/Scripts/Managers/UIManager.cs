@@ -5,61 +5,38 @@ using UnityEngine.UI;
 public class UIManager : Singleton<UIManager>
 {
     // -------------------------------------------------------------------------
-    // Public Static Events and Delegates:
-    // -----------------------------------
-    //   OnBrickCountChanged
-    // -------------------------------------------------------------------------
-
-    #region .  Public Events  .
-
-    //public static event Action<int> OnBrickCountChanged = delegate { };
-
-    #endregion
-
-
-
-    // -------------------------------------------------------------------------
     // Public Variables:
     // -----------------
     //   Button_Pause
+    //   Button_Random
     //   Button_Reset
     //   Button_Resume
     //   Button_Start
     //   Button_Stop
-    //   SliderOuterCircle
-    //   SliderInnerCircle
-    //   SliderDrawPoint
     //   IsStarted
+    //   Slider_OuterCircle
+    //   Slider_InnerCircle
+    //   Slider_DrawPoint
+    //   Slider_OuterCircleRotationSpeed
+    //   Slider_GraphPointDistance
     // -------------------------------------------------------------------------
 
     #region .  Public Variables  .
 
     public Button Button_Pause;
+    public Button Button_Random;
     public Button Button_Resume;
     public Button Button_Reset;
     public Button Button_Start;
     public Button Button_Stop;
 
+    public bool   IsStarted = false;
+
     public Slider Slider_OuterCircle;
     public Slider Slider_InnerCircle;
     public Slider Slider_DrawPoint;
     public Slider Slider_OuterCircleRotationSpeed;
-
-    public bool   IsStarted = false;
-
-    #endregion
-
-
-
-    // -------------------------------------------------------------------------
-    // SerializeField Private Variables:
-    // ---------------------------------
-    //   _variable
-    // -------------------------------------------------------------------------
-
-    #region .  SerializeField Private Variables  .
-
-    //[SerializeField] private float _variable = 0f;
+    public Slider Slider_GraphPointDistance;
 
     #endregion
 
@@ -68,17 +45,20 @@ public class UIManager : Singleton<UIManager>
     // -------------------------------------------------------------------------
     // Private Variables:
     // ------------------
-    //   _variable
+    //   _textOuterCircleValue
+    //   _textInnerCircleValue
+    //   _textDrawPointValue
+    //   _textOuterCircleRotstionSpeed
+    //   _textGraphPointDistance
     // -------------------------------------------------------------------------
 
     #region .  Private Variables  .
-
-    //private float _variable;
 
     private Text _textOuterCircleValue;
     private Text _textInnerCircleValue;
     private Text _textDrawPointValue;
     private Text _textOuterCircleRotstionSpeed;
+    private Text _textGraphPointDistance;
 
     #endregion
 
@@ -87,112 +67,143 @@ public class UIManager : Singleton<UIManager>
     // -------------------------------------------------------------------------
     // Public Methods:
     // ---------------
-    //   OnPauseButtonClicked()
-    //   OnResetButtonClicked()
-    //   OnResumeButtonClicked()
-    //   OnStartButtonClicked()
-    //   OnStopButtonClicked()
+    //   OnButtonPauseClicked()
+    //   OnButtonRandomClicked()
+    //   OnButtonResetClicked()
+    //   OnButtonResumeClicked()
+    //   OnButtonStartClicked()
+    //   OnButtonStopClicked()
+    //   OnSliderOuterCircleChanged()
+    //   OnSliderInnerCircleChanged()
+    //   OnSliderDrawPointChanged()
+    //   OnSliderOuterCircleRotationSpeedChanged()
+    //   OnSliderGraphPointDistanceChanged()
     // -------------------------------------------------------------------------
 
-    #region .  OnPauseButtonClicked()  .
+    #region .  OnButtonPauseClicked()  .
     // -------------------------------------------------------------------------
-    //   Method.......:  OnPauseButtonClicked()
+    //   Method.......:  OnButtonPauseClicked()
     //   Description..:  
     //   Parameters...:  None
     //   Returns......:  Nothing
     // -------------------------------------------------------------------------
-    public void OnPauseButtonClicked()
+    public void OnButtonPauseClicked()
     {
         Time.timeScale = 0f;
 
         SetButton(Button_Start,  true,  false);
         SetButton(Button_Pause,  false, false);
-        SetButton(Button_Resume, true,  true);
-        SetButton(Button_Stop,   true,  true);
+        SetButton(Button_Resume, true,  true );
+        SetButton(Button_Stop,   true,  true );
+        SetButton(Button_Random, true,  false);
 
-    }   // OnPauseButtonClicked()
+    }   // OnButtonPauseClicked()
     #endregion
 
 
-    #region .  OnResumeButtonClicked()  .
+    #region .  OnButtonRandomClicked()  .
     // -------------------------------------------------------------------------
-    //   Method.......:  OnResumeButtonClicked()
+    //   Method.......:  OnButtonRandomClicked()
     //   Description..:  
     //   Parameters...:  None
     //   Returns......:  Nothing
     // -------------------------------------------------------------------------
-    public void OnResumeButtonClicked()
+    public void OnButtonRandomClicked()
+    {
+        SetButton(Button_Start,  true,  true );
+        SetButton(Button_Pause,  true,  false);
+        SetButton(Button_Resume, false, false);
+        SetButton(Button_Stop,   true,  false);
+        SetButton(Button_Random, true,  true );
+
+        SetRandomValues();
+
+    }   // OnButtonRandomClicked()
+    #endregion
+
+
+    #region .  OnButtonResetClicked()  .
+    // -------------------------------------------------------------------------
+    //   Method.......:  OnButtonResetClicked()
+    //   Description..:  
+    //   Parameters...:  None
+    //   Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    public void OnButtonResetClicked()
+    {
+        IsStarted = false;
+
+        SetButton(Button_Start,  true,  true );
+        SetButton(Button_Pause,  true,  false);
+        SetButton(Button_Resume, false, false);
+        SetButton(Button_Stop,   true,  false);
+        SetButton(Button_Random, true,  true );
+
+    }   // OnButtonResetClicked()
+    #endregion
+
+
+    #region .  OnButtonResumeClicked()  .
+    // -------------------------------------------------------------------------
+    //   Method.......:  OnButtonResumeClicked()
+    //   Description..:  
+    //   Parameters...:  None
+    //   Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    public void OnButtonResumeClicked()
     {
         Time.timeScale = 1f;
 
         SetButton(Button_Start,  true,  false);
-        SetButton(Button_Pause,  true,  true);
+        SetButton(Button_Pause,  true,  true );
         SetButton(Button_Resume, false, false);
-        SetButton(Button_Stop,   true,  true);
+        SetButton(Button_Stop,   true,  true );
+        SetButton(Button_Random, true,  false);
 
-    }   // OnResumeButtonClicked()
+    }   // OnButtonResumeClicked()
     #endregion
 
 
-    #region .  OnResetButtonClicked()  .
+    #region .  OnButtonStartClicked()  .
     // -------------------------------------------------------------------------
-    //   Method.......:  OnResetButtonClicked()
+    //   Method.......:  OnButtonStartClicked()
     //   Description..:  
     //   Parameters...:  None
     //   Returns......:  Nothing
     // -------------------------------------------------------------------------
-    public void OnResetButtonClicked()
-    {
-        IsStarted = false;
-
-        SetButton(Button_Start,  true,  true);
-        SetButton(Button_Pause,  true,  false);
-        SetButton(Button_Resume, false, false);
-        SetButton(Button_Stop,   true,  false);
-
-    }   // OnResetButtonClicked()
-    #endregion
-
-
-    #region .  OnStartButtonClicked()  .
-    // -------------------------------------------------------------------------
-    //   Method.......:  OnStartButtonClicked()
-    //   Description..:  
-    //   Parameters...:  None
-    //   Returns......:  Nothing
-    // -------------------------------------------------------------------------
-    public void OnStartButtonClicked()
+    public void OnButtonStartClicked()
     {
         IsStarted = true;
 
         SetButton(Button_Start,  true,  false);
-        SetButton(Button_Pause,  true,  true);
-        SetButton(Button_Reset,  true,  true);
+        SetButton(Button_Pause,  true,  true );
+        SetButton(Button_Reset,  true,  true );
         SetButton(Button_Resume, false, false);
-        SetButton(Button_Stop,   true,  true);
+        SetButton(Button_Stop,   true,  false);
 
-    }   // OnStartButtonClicked()
+    }   // OnButtonStartClicked()
     #endregion
 
 
-    #region .  OnStopButtonClicked()  .
+    #region .  OnButtonStopClicked()  .
     // -------------------------------------------------------------------------
-    //   Method.......:  OnStopButtonClicked()
+    //   Method.......:  OnButtonStopClicked()
     //   Description..:  
     //   Parameters...:  None
     //   Returns......:  Nothing
     // -------------------------------------------------------------------------
-    public void OnStopButtonClicked()
+    public void OnButtonStopClicked()
     {
         IsStarted = false;
 
-        SetButton(Button_Start,  true,  true);
+        SetButton(Button_Start,  true,  true );
         SetButton(Button_Pause,  true,  false);
-        SetButton(Button_Reset,  true,  true);
+        SetButton(Button_Reset,  true,  true );
         SetButton(Button_Resume, false, false);
         SetButton(Button_Stop,   true,  false);
+        SetButton(Button_Random, true,  true );
 
-    }   // OnStopButtonClicked()
+    }   // OnButtonStopClicked()
     #endregion
 
 
@@ -226,18 +237,33 @@ public class UIManager : Singleton<UIManager>
     #endregion
 
 
-    #region .  OnSliderDrawPointChanged()  .
+    #region .  OnSliderOuterCircleRotationSpeedChanged()  .
     // -------------------------------------------------------------------------
-    //   Method.......:  OnSliderDrawPointChanged()
+    //   Method.......:  OnSliderOuterCircleRotationSpeedChanged()
     //   Description..:  
     //   Parameters...:  None
     //   Returns......:  Nothing
     // -------------------------------------------------------------------------
-    public void OnSliderDrawPointChanged()
+    public void OnSliderOuterCircleRotationSpeedChanged()
     {
-        Spirograph.Instance.DrawPointRadius = Slider_DrawPoint.value;
+        Spirograph.Instance.OuterCircleRotationSpeed = Slider_OuterCircleRotationSpeed.value;
 
-    }   // OnSliderDrawPointChanged()
+    }   // OnSliderOuterCircleRotationSpeedChanged()
+    #endregion
+
+
+    #region .  OnSliderGraphPointDistanceChanged()  .
+    // -------------------------------------------------------------------------
+    //   Method.......:  OnSliderGraphPointDistanceChanged()
+    //   Description..:  
+    //   Parameters...:  None
+    //   Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    public void OnSliderGraphPointDistanceChanged()
+    {
+        Spirograph.Instance.GraphPointDistanceThreshold = Slider_GraphPointDistance.value;
+
+    }   // OnSliderGraphPointDistanceChanged()
     #endregion
 
 
@@ -245,9 +271,10 @@ public class UIManager : Singleton<UIManager>
     // -------------------------------------------------------------------------
     // Private Methods:
     // ----------------
+    //   Configure()
     //   SetButton()
     //   Start()
-    //   Update()
+    //   Update()  --  COMMENTED OUT
     // -------------------------------------------------------------------------
 
     #region .  Configure()  .
@@ -263,16 +290,19 @@ public class UIManager : Singleton<UIManager>
         Slider_InnerCircle             .value = Spirograph.Instance.InnerCircleRadius;
         Slider_DrawPoint               .value = Spirograph.Instance.DrawPointRadius;
         Slider_OuterCircleRotationSpeed.value = Spirograph.Instance.OuterCircleRotationSpeed;
+        Slider_GraphPointDistance      .value = Spirograph.Instance.GraphPointDistanceThreshold;
 
         _textOuterCircleValue                 = Slider_OuterCircle             .GetComponentInChildren<Text>();
         _textInnerCircleValue                 = Slider_InnerCircle             .GetComponentInChildren<Text>();
         _textDrawPointValue                   = Slider_DrawPoint               .GetComponentInChildren<Text>();
         _textOuterCircleRotstionSpeed         = Slider_OuterCircleRotationSpeed.GetComponentInChildren<Text>();
+        _textGraphPointDistance               = Slider_GraphPointDistance      .GetComponentInChildren<Text>();
 
         _textOuterCircleValue        .text    = Slider_OuterCircle             .value.ToString();
         _textInnerCircleValue        .text    = Slider_InnerCircle             .value.ToString();
         _textDrawPointValue          .text    = Slider_DrawPoint               .value.ToString();
         _textOuterCircleRotstionSpeed.text    = Slider_OuterCircleRotationSpeed.value.ToString();
+        _textGraphPointDistance      .text    = Slider_GraphPointDistance      .value.ToString();
 
     }   // Configure()
     #endregion
@@ -297,6 +327,23 @@ public class UIManager : Singleton<UIManager>
     #endregion
 
 
+    #region .  SetRandomValues()  .
+    // -------------------------------------------------------------------------
+    //   Method.......:  SetRandomValues()
+    //   Description..:  
+    //   Parameters...:  None
+    //   Returns......:  Nothing
+    // -------------------------------------------------------------------------
+    private void SetRandomValues()
+    {
+        Slider_OuterCircle.value = Random.Range(Slider_OuterCircle.minValue, Slider_OuterCircle.maxValue);
+        Slider_InnerCircle.value = Random.Range(Slider_InnerCircle.minValue, Slider_InnerCircle.maxValue);
+        Slider_DrawPoint  .value = Random.Range(Slider_DrawPoint  .minValue, Slider_DrawPoint  .maxValue);
+
+    }   // SetRandomValues()
+    #endregion
+
+
     #region .  Start()  .
     // -------------------------------------------------------------------------
     //   Method.......:  Start()
@@ -308,13 +355,13 @@ public class UIManager : Singleton<UIManager>
     {
         IsStarted = false;
 
-        //Configure();
+        Configure();
 
     }   // Start()
     #endregion
 
 
-    #region .  Update()  .
+    #region .  Update()  --  COMMENTED OUT  .
     //// -------------------------------------------------------------------------
     ////   Method.......:  Update()
     ////   Description..:  
