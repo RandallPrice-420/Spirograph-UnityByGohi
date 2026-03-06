@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Value
+  - Outer Circle Radius
+  - Inner Circle Radius
+  - Draw Point Radius
   layers:
   - Default
   - TransparentFX

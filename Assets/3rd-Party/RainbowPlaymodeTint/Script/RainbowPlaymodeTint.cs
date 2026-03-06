@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
 using System.Linq;
 using System.Reflection;
-using System;
+using UnityEditor;
+using UnityEngine;
 
 
 /* Created by PEROT Nicolas: https://nicolas-perot.go.yj.fr/ the 14/10/2022 with Unity 2020.3.17f1
@@ -44,6 +44,7 @@ public class RainbowPlaymodeTint : MonoBehaviour
 
     }   // Awake()
 
+
     private static Type GetEditorType(string aName)
     {
         return typeof(Editor).Assembly.GetTypes().Where((a) => a.Name == aName).FirstOrDefault();
@@ -53,10 +54,10 @@ public class RainbowPlaymodeTint : MonoBehaviour
 
     private static object GetPref(string aName)
     {
+        FieldInfo myList = RainbowPlaymodeTint.m_PrefsField;
         return ((SortedList<string, object>)m_PrefsField.GetValue(null))[aName];
 
     }   // GetPref()
-
 
 
     private void Start()
@@ -64,15 +65,15 @@ public class RainbowPlaymodeTint : MonoBehaviour
         // Setup first color RGB to HSV.
         Color.RGBToHSV(StartColor, out H, out S, out V);
 
-        Type settingsType = GetEditorType("PrefSettings")
-            ;
+        Type settingsType  = GetEditorType("PrefSettings");
         Type prefColorType = GetEditorType("PrefColor");
+
         if (settingsType == null || prefColorType == null)
         {
             Debug.Log("settingsType or prefColorType have changed types cause to different Unity version");
         }
 
-        m_PrefsField = settingsType.GetField("m_Prefs", BindingFlags.Static | BindingFlags.NonPublic);
+        m_PrefsField     = settingsType .GetField("m_Prefs", BindingFlags.Static   | BindingFlags.NonPublic);
         m_PrefColorField = prefColorType.GetField("m_Color", BindingFlags.Instance | BindingFlags.NonPublic);
 
     }   // Start()
@@ -151,8 +152,10 @@ public class PlaymodeTintWindow : EditorWindow
                     {
                         name = "Rainbow Playmode Tint"
                     };
+
                     gameObject.AddComponent<RainbowPlaymodeTint>().SpeedColor = _speedColor;
                     gameObject.GetComponent<RainbowPlaymodeTint>().StartColor = _startColor;
+
                     _scriptCreated = true;
                 }
             }
@@ -162,10 +165,12 @@ public class PlaymodeTintWindow : EditorWindow
             if (GUILayout.Button("Delete the Rainbow Component"))
             {
                 RainbowPlaymodeTint script = FindFirstObjectByType<RainbowPlaymodeTint>();
+
                 if (script != null)
                 {
                     DestroyImmediate(script.gameObject);
                 }
+
                 _scriptCreated = false;
             }
         }
