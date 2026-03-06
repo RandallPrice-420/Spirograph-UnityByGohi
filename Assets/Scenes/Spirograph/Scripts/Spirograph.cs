@@ -431,8 +431,8 @@ public class Spirograph : Singleton<Spirograph>
     // -------------------------------------------------------------------------
     private void Start()
     {
-        float coordinateX = (Screen.width / 2f) - OuterCircleRadius - 10f;
-        //transform.SetPositionAndRotation(new Vector3(coordinateX, 0f, 0f), Quaternion.identity);
+
+        _lineRendererOuterCircle.gameObject.SetActive(false);
 
     }   // Start()
     #endregion

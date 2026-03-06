@@ -228,7 +228,8 @@ public class UIManager : Singleton<UIManager>
         SetButton(Button_Reset,  true,  false);
         SetButton(Button_Quit,   true,  false);
 
-        IsStarted = true;
+        IsStarted      = true;
+        Time.timeScale = 1f;
 
     }   // OnButtonStartClicked()
     #endregion
@@ -251,7 +252,8 @@ public class UIManager : Singleton<UIManager>
         SetButton(Button_Reset,  true,  true );
         SetButton(Button_Quit,   true,  true );
 
-        IsStarted = false;
+        IsStarted      = false;
+        Time.timeScale = 1f;
 
     }   // OnButtonStopClicked()
     #endregion

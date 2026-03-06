@@ -54,8 +54,19 @@ public class RainbowPlaymodeTint : MonoBehaviour
 
     private static object GetPref(string aName)
     {
-        FieldInfo myList = RainbowPlaymodeTint.m_PrefsField;
-        return ((SortedList<string, object>)m_PrefsField.GetValue(null))[aName];
+        object pref = null;
+
+        try
+        {
+            FieldInfo myList = RainbowPlaymodeTint.m_PrefsField;
+            pref = ((SortedList<string, object>)m_PrefsField.GetValue(null))[aName];
+        }
+        catch (Exception ex)
+        {
+            Debug.Log($"Ex:  {ex}");
+        }
+
+        return pref;
 
     }   // GetPref()
 
